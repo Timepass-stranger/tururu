@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Our Great Journeys</title>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Josefin Sans', sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      color: #fff;
+    }
+
+    /* Background aura particles */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: moveBg 80s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes moveBg {
+      from { background-position: 0 0; }
+      to { background-position: 1000px 1000px; }
+    }
+
+    .container {
+      position: relative;
+      max-width: 900px;
+      width: 100%;
+      height: 600px;
+      padding: 30px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 0 60px rgba(108, 99, 255, 0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+      text-align: center;
+      user-select: none;
+    }
+
+    #year {
+      font-size: 5.5rem;
+      font-weight: 700;
+      letter-spacing: 15px;
+      color: #6c63ff;
+      text-shadow: 0 0 20px #6c63ff88;
+      margin-bottom: 20px;
+      animation: floatText 3s ease-in-out infinite;
+    }
+
+    @keyframes floatText {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .image-container {
+      width: 100%;
+      max-width: 700px;
+      height: 360px;
+      overflow: hidden;
+      border-radius: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 0 50px rgba(108, 99, 255, 0.4);
+      position: relative;
+      transition: transform 0.5s ease;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px;
+      transition: opacity 0.6s ease, transform 0.5s ease;
+    }
+
+    .image-container:hover {
+      transform: scale(1.02);
+    }
+
+    #desc {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #ddd;
+      margin-bottom: 10px;
+      transition: all 0.3s ease;
+    }
+
+    #descLines {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: #aaa;
+      max-width: 700px;
+      line-height: 1.7;
+      white-space: pre-line;
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" tabindex="0">
+    <div id="year">2015</div>
+    <div class="image-container">
+      <img id="image" src="" alt="Memory" />
+    </div>
+    <div id="desc">Loading description...</div>
+    <div id="descLines">Loading details...</div>
+  </div>
+
+  <script>
+    const data = [
+      { year: 2015, img: 'ChatGPT Image Jun 23, 2025, 04_36_00 PM.jpg', desc: 'Jab we met', lines: "2015: The beginning of an incredible journey.." },
+      { year: 2020, img: 'ChatGPT Image Jun 23, 2025, 04_44_12 PM.jpg', desc: 'Online class', lines: "2020: SLEEPING SCHEDULE WITH TOPPER" },
+      { year: 2021, img: 'ChatGPT Image Jun 23, 2025, 05_34_24 PM.jpg', desc: 'Tough Times.', lines: "2021: 12th B1." },
+      { year: 2022, img: 'Cinema.jpg', desc: 'The Play date.', lines: "2022: Coincidences." },
+      { year: 2023, img: '2023.jpg', desc: 'One Year', lines: "2023: DESTINY." },
+      { year: 2024, img: 'My ChatGPT image.jpg', desc: 'METRO RIDE.', lines: "2024: EXAMINATION TIME" },
+      { year: 2025, img: '2025.jpg', desc: 'THE FUTURE:', lines: "2025: LONG DISTANCE RELATIONSHIP IN A SHORT DISTANCE." }
+    ];
+
+    const yearEl = document.getElementById('year');
+    const imageEl = document.getElementById('image');
+    const descEl = document.getElementById('desc');
+    const descLinesEl = document.getElementById('descLines');
+    const container = document.querySelector('.container');
+
+    let currentIndex = 0;
+    updateContent(currentIndex);
+
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      currentIndex += e.deltaY > 0 ? 1 : -1;
+      currentIndex = Math.max(0, Math.min(data.length - 1, currentIndex));
+      updateContent(currentIndex);
+    }, { passive: false });
+
+    let touchStartY = 0, touchStartX = 0;
+    container.addEventListener('touchstart', e => {
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+    });
+
+    container.addEventListener('touchend', e => {
+      const dy = touchStartY - e.changedTouches[0].clientY;
+      const dx = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(dy) > Math.abs(dx)) {
+        currentIndex += dy > 30 ? 1 : (dy < -30 ? -1 : 0);
+      } else {
+        currentIndex += dx > 30 ? 1 : (dx < -30 ? -1 : 0);
+      }
+      currentIndex = Math.max(0, Math.min(data.length - 1, currentIndex));
+      updateContent(currentIndex);
+    });
+
+    container.addEventListener('keydown', e => {
+      if (["ArrowDown", "ArrowRight"].includes(e.key)) currentIndex++;
+      if (["ArrowUp", "ArrowLeft"].includes(e.key)) currentIndex--;
+      currentIndex = Math.max(0, Math.min(data.length - 1, currentIndex));
+      updateContent(currentIndex);
+    });
+
+    function fadeOutIn(el, content) {
+      el.style.opacity = 0;
+      setTimeout(() => {
+        if (el.tagName === "IMG") {
+          el.src = content;
+        } else {
+          el.innerHTML = content;
+        }
+        el.style.opacity = 1;
+      }, 300);
+    }
+
+    function updateContent(i) {
+      const d = data[i];
+      fadeOutIn(yearEl, d.year);
+      fadeOutIn(imageEl, d.img);
+      fadeOutIn(descEl, d.desc);
+      fadeOutIn(descLinesEl, d.lines.replace(/\n/g, "<br>"));
+    }
+  </script>
+
+</body>
+</html>
